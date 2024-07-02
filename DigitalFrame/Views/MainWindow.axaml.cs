@@ -9,6 +9,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 {
     public MainWindow()
     {
+        InitializeComponent();
         this.WhenActivated(disposableImage =>
         {
             this.BindCommand(ViewModel,
@@ -23,6 +24,5 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                 v => v.NextBtn
             ).DisposeWith(disposableImage);
         });
-        InitializeComponent();
     }
 }

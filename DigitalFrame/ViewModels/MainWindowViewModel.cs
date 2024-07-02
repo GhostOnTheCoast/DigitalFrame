@@ -18,22 +18,52 @@ public class MainWindowViewModel : ViewModelBase
         get => _currentImage;
         set => this.RaiseAndSetIfChanged(ref _currentImage, value);
     }
+    
+    /// <summary>
+    /// Top bar label
+    /// </summary>
     public string Greeting => "Digital Frame";
 
     private int _currentIndex = 0;
+    /// <summary>
+    /// The current image index
+    /// </summary>
+    public int CurrentIndex
+    {
+        get => _currentIndex;
+        set => this.RaiseAndSetIfChanged(ref _currentIndex, value); 
+    }
+    
+    /// <summary>
+    /// Reactive command to move to previous image.
+    /// </summary>
     public ReactiveCommand<Unit, Unit> PreviousImage { get; }
+    /// <summary>
+    /// Reactive Command to move to next image
+    /// </summary>
     public ReactiveCommand<Unit, Unit> NextImage { get; }
 
-    private IDisposable _timer;
+    private IDisposable? _frameTimer;
+
+    /// <summary>
+    /// Holder for timer
+    /// </summary>
+    public IDisposable? FrameTimer
+    {
+        get => _frameTimer;
+        set => this.RaiseAndSetIfChanged(ref _frameTimer, value);
+    }
+    
     
     // TODO: This is a temp constant that needs to be pulled from somewhere
     private List<string> _files = [ "c:/!/splash.jpg", @"C:\!\kit.jpg", @"C:\!\panda.jpg", @"C:\!\ulrich.png"];
+    
     public MainWindowViewModel()
     {
         CurrentImage = new Bitmap( _files.First());
         PreviousImage = ReactiveCommand.Create(DoPrevious);
         NextImage = ReactiveCommand.Create(DoNext);
-        _timer =
+        FrameTimer =
             Observable
                 .Interval(TimeSpan.FromSeconds(5.0))
                 .Subscribe(x =>
@@ -42,7 +72,7 @@ public class MainWindowViewModel : ViewModelBase
                 });
         
         // This ends the timer
-        //_timer.Dispose(); 
+        //FrameTimer.Dispose(); 
     }
 
     public void DoPrevious()
