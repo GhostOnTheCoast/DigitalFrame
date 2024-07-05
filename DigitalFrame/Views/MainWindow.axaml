@@ -8,6 +8,7 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="DigitalFrame">
+    <!-- WindowStartupLocation -->  
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -17,7 +18,7 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
         <!-- Top Control Block -->
-        <TextBlock Grid.Row="0" Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="0" Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="Greeting"/>
         
         <!-- Image Preview -->
         <TransitioningContentControl Grid.Row="1" Content="{Binding CurrentImage}">
