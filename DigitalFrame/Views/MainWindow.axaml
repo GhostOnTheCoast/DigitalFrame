@@ -36,6 +36,8 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button x:Name="PreviousBtn">Previous</Button>
             <Button x:Name="NextBtn">Next</Button>
+            <Button x:Name="ShowBtn">Show</Button>
+            <Button x:Name="CloseBtn">Close</Button>
         </StackPanel>
     </Grid>
     

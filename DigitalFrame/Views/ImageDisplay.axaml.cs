@@ -7,14 +7,12 @@ namespace DigitalFrame.Views;
 
 public partial class ImageDisplay : Window
 {
-    public ImageDisplay()
+    public ImageDisplay(int screenNumber, bool fullScreen)
     {
-        //this.WindowState = WindowState.FullScreen;
-        int numScreens = this.Screens.ScreenCount;
-        var screen = this.Screens.All[numScreens - 1];
+        //int numScreens = this.Screens.ScreenCount;
+        var screen = this.Screens.All[screenNumber];
         this.Position = new Avalonia.PixelPoint(screen.Bounds.X, screen.Bounds.Y);
+        if (fullScreen) this.WindowState = WindowState.FullScreen;
         InitializeComponent();
-
-        this.WindowState = WindowState.FullScreen;
     }
 }

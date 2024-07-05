@@ -13,6 +13,7 @@ using ReactiveUI.Fody.Helpers;
 namespace DigitalFrame.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
+    [Reactive] public List<ImageDisplay> Displays { get; set; }
 
     /// <summary>
     /// The currently displayed image in the frame.
@@ -39,6 +40,10 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public ReactiveCommand<Unit, Unit> NextImage { get; }
     
+    public ReactiveCommand<Unit, Unit> ShowDisplay { get; }
+    
+    public ReactiveCommand<Unit, Unit> CloseDisplay { get; }
+    
     /// <summary>
     /// Holder for timer
     /// </summary>
@@ -49,10 +54,14 @@ public class MainWindowViewModel : ViewModelBase
     
     public MainWindowViewModel()
     {
+        Displays = new List<ImageDisplay>();
+        Displays.Add(new ImageDisplay(0,false));
         Greeting = "Digital Frame";
         CurrentImage = new Bitmap( _files.First());
         PreviousImage = ReactiveCommand.Create(DoPrevious);
         NextImage = ReactiveCommand.Create(DoNext);
+        ShowDisplay = ReactiveCommand.Create(DoShow);
+        CloseDisplay = ReactiveCommand.Create(DoClose);
         FrameTimer =
             Observable
                 .Interval(TimeSpan.FromSeconds(5.0))
@@ -74,6 +83,16 @@ public class MainWindowViewModel : ViewModelBase
     {
         CurrentIndex = (CurrentIndex == _files.Count - 1) ? 0 : CurrentIndex + 1;
         CurrentImage = new Bitmap(_files[CurrentIndex]);    
+    }
+
+    public void DoShow()
+    {
+        Displays[0].Show();
+    }
+
+    public void DoClose()
+    {
+        Displays[0].Close();
     }
 
 }

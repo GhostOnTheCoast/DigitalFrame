@@ -19,15 +19,20 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                 vm => vm.PreviousImage,
                 v => v.PreviousBtn
             ).DisposeWith(disposableImage);
-        });
-        this.WhenActivated(disposableImage =>
-        {
             this.BindCommand(ViewModel,
                 vm => vm.NextImage,
                 v => v.NextBtn
             ).DisposeWith(disposableImage);
+            
+            this.BindCommand(ViewModel,
+                vm => vm.ShowDisplay,
+                v => v.ShowBtn
+            ).DisposeWith(disposableImage);
+            this.BindCommand(ViewModel,
+                vm => vm.CloseDisplay,
+                v => v.CloseBtn
+            ).DisposeWith(disposableImage);
         });
-        var imgWindow = new ImageDisplay();
-        imgWindow.Show();
+        
     }
 }
