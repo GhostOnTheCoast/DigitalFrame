@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
+using Avalonia.Threading;
 using DigitalFrame.Views;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -13,7 +12,15 @@ using ReactiveUI.Fody.Helpers;
 namespace DigitalFrame.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
+    /// <summary>
+    /// List of ImageDisplays, one for each screen
+    /// </summary>
     [Reactive] public List<ImageDisplay> Displays { get; set; }
+    
+    /// <summary>
+    /// Number of attached screens
+    /// </summary>
+    [Reactive] public int NumberOfScreens { get; set; }
 
     /// <summary>
     /// The currently displayed image in the frame.
@@ -55,7 +62,7 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         Displays = new List<ImageDisplay>();
-        Displays.Add(new ImageDisplay(0,false));
+        //Displays.Add(new ImageDisplay(0, false));
         Greeting = "Digital Frame";
         CurrentImage = new Bitmap( _files.First());
         PreviousImage = ReactiveCommand.Create(DoPrevious);
@@ -74,25 +81,68 @@ public class MainWindowViewModel : ViewModelBase
         //FrameTimer.Dispose(); 
     }
 
-    public void DoPrevious()
+    private void DoPrevious()
     {
         CurrentIndex = (CurrentIndex == 0) ? _files.Count -1 : CurrentIndex - 1;
-        CurrentImage = new Bitmap(_files[CurrentIndex]);    
+        CurrentImage = new Bitmap(_files[CurrentIndex]);
+        /*foreach (var screen in Displays)
+        {
+            screen.ViewModel.CurrentImage = CurrentImage;
+        }*/
     }
-    public void DoNext()
+    private void DoNext()
     {
         CurrentIndex = (CurrentIndex == _files.Count - 1) ? 0 : CurrentIndex + 1;
         CurrentImage = new Bitmap(_files[CurrentIndex]);    
+        /*foreach (var screen in Displays)
+        {
+            screen.ViewModel.CurrentImage = CurrentImage;
+        }*/
     }
 
-    public void DoShow()
+    private void DoShow()
     {
-        Displays[0].Show();
+        MakeScreens();
+        foreach (var screen in Displays)
+        {
+            screen.Show();
+        }
+
     }
 
-    public void DoClose()
+    private void DoClose()
     {
-        Displays[0].Close();
+        foreach (var screen in Displays)
+        {
+            screen.Close();
+        }
+
     }
 
+    private void MakeScreens()
+    {
+        //for (int i = 0; i < NumberOfScreens; i++)
+        //{
+            //int n = i;
+            var sImageDisplay = new ImageDisplay(0, false);
+            Displays =
+            [
+                sImageDisplay
+            ];
+        this.WhenAnyValue(x => x.CurrentIndex)
+            .Do(x => Dispatcher.UIThread.Post(
+                    () => 
+                    ChangeImage(0, x)
+                    )
+            )
+            .Subscribe();
+    }
+
+    private void ChangeImage(int display, int fileIndex)
+    {
+        var v = Displays.ElementAt(display);
+        var a = v.DataContext;
+        v.ViewModel?.ChangeImage.Execute(_files[fileIndex]);
+        
+    }
 }

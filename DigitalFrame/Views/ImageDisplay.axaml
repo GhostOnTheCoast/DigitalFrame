@@ -2,9 +2,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="using:DigitalFrame.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
+        Width="500"
+        Height="500"
         x:Class="DigitalFrame.Views.ImageDisplay"
+        x:DataType="vm:ImageDisplayViewModel"
         Title="ImageDisplay"
         WindowStartupLocation="Manual">
-    Welcome to Avalonia!
+    <Design.DataContext>
+        <vm:ImageDisplayViewModel/>
+    </Design.DataContext>
+    <Grid RowDefinitions="*">
+        
+        <!-- Image Preview -->
+        <TransitioningContentControl Grid.Row="0" Content="{Binding CurrentImage}">
+            <TransitioningContentControl.PageTransition>
+                <CrossFade FadeOutEasing="SineEaseOut" FadeInEasing="SineEaseIn" Duration="0:00:00.5"/> 
+            </TransitioningContentControl.PageTransition>
+            <TransitioningContentControl.ContentTemplate>
+                <DataTemplate DataType="Bitmap">
+                    <Image Source="{Binding}" Height="500" Width="500"/>    
+                </DataTemplate>
+            </TransitioningContentControl.ContentTemplate>
+        </TransitioningContentControl>
+    </Grid>
 </Window>

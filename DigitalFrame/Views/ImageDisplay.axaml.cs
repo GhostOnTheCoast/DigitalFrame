@@ -1,15 +1,13 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using Avalonia.Platform;
+﻿using Avalonia.Controls;
+using Avalonia.ReactiveUI;
+using DigitalFrame.ViewModels;
 
 namespace DigitalFrame.Views;
 
-public partial class ImageDisplay : Window
+public partial class ImageDisplay : ReactiveWindow<ImageDisplayViewModel>
 {
     public ImageDisplay(int screenNumber, bool fullScreen)
     {
-        //int numScreens = this.Screens.ScreenCount;
         var screen = this.Screens.All[screenNumber];
         this.Position = new Avalonia.PixelPoint(screen.Bounds.X, screen.Bounds.Y);
         if (fullScreen) this.WindowState = WindowState.FullScreen;

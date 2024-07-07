@@ -1,4 +1,6 @@
+using System;
 using System.Reactive.Disposables;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.ReactiveUI;
@@ -13,6 +15,12 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     public MainWindow()
     {
         InitializeComponent();
+        this.DataContextChanged += delegate(object? o, EventArgs args)
+        {
+            var vm = (DataContext as MainWindowViewModel);
+            vm.NumberOfScreens = this.Screens.ScreenCount;
+        };
+        
         this.WhenActivated(disposableImage =>
         {
             this.BindCommand(ViewModel,
@@ -35,4 +43,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         });
         
     }
+
+
 }
