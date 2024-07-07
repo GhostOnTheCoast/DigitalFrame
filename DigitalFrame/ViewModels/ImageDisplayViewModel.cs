@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reactive;
-using System.Reactive.Linq;
+﻿using System.Reactive;
 using Avalonia.Media.Imaging;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -14,14 +12,16 @@ public class ImageDisplayViewModel : ViewModelBase
     /// </summary>
     [Reactive] public Bitmap CurrentImage { get; set; }
     
+    // TODO: Find out why I can't trigger this from code
     public ReactiveCommand<string,Unit> ChangeImage { get; }
     public ImageDisplayViewModel()
     {
-        CurrentImage = new Bitmap("c:/!/splash.jpg");
         ChangeImage = ReactiveCommand.Create<string>(DoChange);
+        // TODO: convert this back to the ChangeImage reactive command
+        DoChange(@"c:\!\splash.jpg");
     }
 
-    private void DoChange(string path)
+    public void DoChange(string path)
     {
         CurrentImage = new Bitmap(path);
     }

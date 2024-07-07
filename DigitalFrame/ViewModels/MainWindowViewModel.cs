@@ -47,8 +47,10 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public ReactiveCommand<Unit, Unit> NextImage { get; }
     
+    // TODO: Convert this to only show the displays - automate the execution of it
     public ReactiveCommand<Unit, Unit> ShowDisplay { get; }
     
+    // TODO: Modify to close all extra displays - not even sure I need this
     public ReactiveCommand<Unit, Unit> CloseDisplay { get; }
     
     /// <summary>
@@ -57,12 +59,11 @@ public class MainWindowViewModel : ViewModelBase
     [Reactive] public IDisposable? FrameTimer { get; set; }
    
     // TODO: This is a temp constant that needs to be pulled from somewhere
-    private List<string> _files = [ "c:/!/splash.jpg", @"C:\!\kit.jpg", @"C:\!\panda.jpg", @"C:\!\ulrich.png"];
+    private List<string> _files = [ @"c:\!\splash.jpg", @"C:\!\kit.jpg", @"C:\!\panda.jpg", @"C:\!\ulrich.png"];
     
     public MainWindowViewModel()
     {
         Displays = new List<ImageDisplay>();
-        //Displays.Add(new ImageDisplay(0, false));
         Greeting = "Digital Frame";
         CurrentImage = new Bitmap( _files.First());
         PreviousImage = ReactiveCommand.Create(DoPrevious);
@@ -85,19 +86,11 @@ public class MainWindowViewModel : ViewModelBase
     {
         CurrentIndex = (CurrentIndex == 0) ? _files.Count -1 : CurrentIndex - 1;
         CurrentImage = new Bitmap(_files[CurrentIndex]);
-        /*foreach (var screen in Displays)
-        {
-            screen.ViewModel.CurrentImage = CurrentImage;
-        }*/
     }
     private void DoNext()
     {
         CurrentIndex = (CurrentIndex == _files.Count - 1) ? 0 : CurrentIndex + 1;
         CurrentImage = new Bitmap(_files[CurrentIndex]);    
-        /*foreach (var screen in Displays)
-        {
-            screen.ViewModel.CurrentImage = CurrentImage;
-        }*/
     }
 
     private void DoShow()
@@ -107,7 +100,6 @@ public class MainWindowViewModel : ViewModelBase
         {
             screen.Show();
         }
-
     }
 
     private void DoClose()
@@ -116,33 +108,23 @@ public class MainWindowViewModel : ViewModelBase
         {
             screen.Close();
         }
-
     }
 
     private void MakeScreens()
     {
-        //for (int i = 0; i < NumberOfScreens; i++)
-        //{
-            //int n = i;
-            var sImageDisplay = new ImageDisplay(0, false);
-            Displays =
-            [
-                sImageDisplay
-            ];
+        var sImageDisplay = new ImageDisplay(0, false);
+        Displays =
+        [
+            sImageDisplay
+        ];
         this.WhenAnyValue(x => x.CurrentIndex)
-            .Do(x => Dispatcher.UIThread.Post(
-                    () => 
-                    ChangeImage(0, x)
-                    )
-            )
+            .Do(x => Dispatcher.UIThread.Post(() => ChangeImage(0, x)))
             .Subscribe();
     }
 
     private void ChangeImage(int display, int fileIndex)
     {
         var v = Displays.ElementAt(display);
-        var a = v.DataContext;
-        v.ViewModel?.ChangeImage.Execute(_files[fileIndex]);
-        
+        v.ViewModel?.DoChange(_files[fileIndex]);
     }
 }
