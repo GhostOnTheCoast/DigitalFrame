@@ -15,7 +15,7 @@ public class MainWindowViewModel : ViewModelBase
     /// <summary>
     /// List of ImageDisplays, one for each screen
     /// </summary>
-    [Reactive] public List<ImageDisplay> Displays { get; set; }
+    [Reactive] private List<ImageDisplay> Displays { get; set; }
     
     /// <summary>
     /// Number of attached screens
